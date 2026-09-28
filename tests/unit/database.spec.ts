@@ -14,7 +14,6 @@ test.group('Database foundation', (group) => {
   const createUser = () => {
     seed++
     return User.create({
-      fullName: `Test User ${seed}`,
       email: `db-foundation-${seed}@test.dev`,
       password: 'secret1234',
       username: `db_foundation_${seed}`,
@@ -96,9 +95,9 @@ test.group('Database foundation', (group) => {
       subjectId: post.id,
     })
 
-    assert.isNull(notification.readAt)
-    await notification.related('actor').fetch()
-    assert.equal(notification.actor.id, actor.id)
+    const [loaded] = await Notification.query().where('id', notification.id).preload('actor')
+    assert.isNull(loaded.readAt)
+    assert.equal(loaded.actor.id, actor.id)
     await assert.rejects(() =>
       Notification.create({ recipientId: 999999, actorId: actor.id, type: 'follow' })
     )

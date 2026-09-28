@@ -1,16 +1,18 @@
-@layouts.auth()
-  <h1 class="auth__title">Create your account</h1>
-  <p class="auth__sub">Start building with the starter kit.</p>
+@layouts.auth({ title: 'Créer un compte' })
+  <h1 class="auth-sheet__title">Créer un compte</h1>
+  <p class="auth-sheet__sub">Choisissez votre pseudo, c'est ce que les autres verront.</p>
+
   @form({
     route: 'new_account.store',
     method: 'POST',
-    class: 'auth__form',
+    class: 'auth-sheet__form',
     'x-data': '{ submitting: false }',
     'x-on:submit': 'submitting = true',
   })
-    @field.root({ name: 'fullName' })
-      @!field.label({ text: 'Full name' })
-      @!input.control({ autocomplete: 'name', placeholder: 'Ada Lovelace' })
+    @field.root({ name: 'username' })
+      @!field.label({ text: 'Pseudo' })
+      @!input.control({ autocomplete: 'username', placeholder: 'votre_pseudo' })
+      <p class="field__hint">Lettres, chiffres et underscores — 3 à 30 caractères.</p>
       @!field.error()
     @end
     @field.root({ name: 'email' })
@@ -18,12 +20,12 @@
       @!input.control({
         type: 'email',
         autocomplete: 'email',
-        placeholder: 'you@example.com',
+        placeholder: 'vous@exemple.com',
       })
       @!field.error()
     @end
     @field.root({ name: 'password' })
-      @!field.label({ text: 'Password' })
+      @!field.label({ text: 'Mot de passe' })
       @!input.control({
         type: 'password',
         autocomplete: 'new-password',
@@ -32,7 +34,7 @@
       @!field.error()
     @end
     @field.root({ name: 'passwordConfirmation' })
-      @!field.label({ text: 'Confirm password' })
+      @!field.label({ text: 'Confirmer le mot de passe' })
       @!input.control({
         type: 'password',
         autocomplete: 'new-password',
@@ -41,23 +43,19 @@
       @!field.error()
     @end
     @!button({
-      text: 'Create account',
+      text: 'Créer mon compte',
       type: 'submit',
       block: true,
       style: 'margin-top: 4px;',
       'x-bind:disabled': 'submitting',
-      'x-text': "submitting ? 'One moment…' : 'Create account'",
+      'x-text': "submitting ? 'Un instant…' : 'Créer mon compte'",
     })
   @end
 
-  <p class="auth__foot">
-    
-    
-    Already have an account?
-
-
+  <p class="auth-sheet__foot">
+    Déjà un compte ?
     @link({ route: 'session.create', class: 'il' })
-      Sign in
+      Se connecter
     @end
   </p>
 @end

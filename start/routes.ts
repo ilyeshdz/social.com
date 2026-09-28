@@ -11,7 +11,15 @@ import { middleware } from '#start/kernel'
 import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 
-router.on('/').render('pages/home').as('home')
+router.get('/', [controllers.Home, 'index']).as('home')
+
+router
+  .group(() => {
+    router.post('posts', [controllers.Post, 'store']).as('posts.store')
+    router.get('settings', [controllers.Settings, 'index']).as('settings')
+    router.post('logout', [controllers.Session, 'destroy'])
+  })
+  .use(middleware.auth())
 
 router
   .group(() => {
@@ -22,10 +30,3 @@ router
     router.post('login', [controllers.Session, 'store'])
   })
   .use(middleware.guest())
-
-router
-  .group(() => {
-    router.on('/dashboard').render('pages/dashboard').as('dashboard')
-    router.post('logout', [controllers.Session, 'destroy'])
-  })
-  .use(middleware.auth())

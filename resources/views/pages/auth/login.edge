@@ -1,10 +1,11 @@
-@layouts.auth()
-  <h1 class="auth__title">Welcome back</h1>
-  <p class="auth__sub">Sign in to continue building.</p>
+@layouts.auth({ title: 'Se connecter' })
+  <h1 class="auth-sheet__title">Se connecter</h1>
+  <p class="auth-sheet__sub">Content de vous revoir.</p>
+
   @form({
     route: 'session.store',
     method: 'POST',
-    class: 'auth__form',
+    class: 'auth-sheet__form',
     'x-data': '{ submitting: false }',
     'x-on:submit': 'submitting = true',
   })
@@ -13,12 +14,12 @@
       @!input.control({
         type: 'email',
         autocomplete: 'username',
-        placeholder: 'you@example.com',
+        placeholder: 'vous@exemple.com',
       })
       @!field.error()
     @end
     @field.root({ name: 'password' })
-      @!field.label({ text: 'Password' })
+      @!field.label({ text: 'Mot de passe' })
       @!input.control({
         type: 'password',
         autocomplete: 'current-password',
@@ -27,25 +28,19 @@
       @!field.error()
     @end
     @!button({
-      text: 'Sign in',
+      text: 'Se connecter',
       type: 'submit',
       block: true,
       style: 'margin-top: 4px;',
       'x-bind:disabled': 'submitting',
-      'x-text': "submitting ? 'One moment…' : 'Sign in'",
+      'x-text': "submitting ? 'Un instant…' : 'Se connecter'",
     })
   @end
 
-  <p class="auth__foot">
-    
-    
-
-    New here?
-
-
-
+  <p class="auth-sheet__foot">
+    Pas encore de compte ?
     @link({ route: 'new_account.create', class: 'il' })
-      Create an account
+      S'inscrire
     @end
   </p>
 @end

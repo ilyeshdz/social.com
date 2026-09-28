@@ -1,12 +1,14 @@
-{{--
-  Top-level app navigation. Add an entry here for every new area of your
-  app, and it shows up in the navigation bar with its active state handled.
---}}
-@let(nav = [{ label: 'Dashboard', route: 'dashboard', icon: 'lucide:house' }])
+@let(nav = [{ label: 'Accueil', route: 'home', icon: 'lucide:house' }])
 @let(pageTitle = $props.get('title'))
+@let(currentTheme = request.plainCookie('app_theme', {
+  defaultValue: 'light',
+  encoded: false,
+}))
+@let(inputErrors = flashMessages.get('inputErrorsBag', {}))
+@let(composeHasErrors = 'content' in inputErrors)
 <!DOCTYPE html>
 <html
-  lang="en-us"
+  lang="fr"
   data-theme="{{
     request.plainCookie('app_theme', {
       defaultValue: 'light',
@@ -17,42 +19,169 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ pageTitle ? `${pageTitle} - AdonisJS` : 'AdonisJS — Starter Kit' }}</title>
+    <title>{{ pageTitle ? `${pageTitle} — Social` : 'Social' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
   <body>
-    <header class="header header--bar">
-      <div class="header__inner">
-        @!logo({ size: 28 })
-        <div class="header__right">
-          @!themeToggle()
-          @form({ route: 'session.destroy', method: 'POST' })
-            <button type="submit" class="btn btn--secondary btn--sm">
-              @svg('lucide:log-out', { width: 15, height: 15 })
-              
-              Log out
+    <div class="shell" x-data="{ composeOpen: {{ composeHasErrors ? 'true' : 'false' }} }">
+      <aside class="sidebar">
+        @!logo({ size: 30, class: 'sidebar__logo' })
 
-            </button>
+        <nav class="sidebar__nav" aria-label="Navigation principale">
+          @each(item in nav)
+            @navLink({ route: item.route, class: 'sidebar__link' })
+              @svg(item.icon, { width: 23, height: 23 })
+              <span class="sidebar__label">{{ item.label }}</span>
+            @end
+          @end
+        </nav>
+
+        @if(auth.user)
+          <button
+            type="button"
+            class="btn btn--primary sidebar__cta"
+            x-on:click="composeOpen = true"
+          >
+            @svg('lucide:plus', { width: 20, height: 20 })
+            <span class="sidebar__label">Publier</span>
+          </button>
+        @else
+          <div class="sidebar__auth">
+            @link({ route: 'session.create', class: 'btn btn--secondary btn--sm btn--block' })
+              Connexion
+            @end
+            @link({ route: 'new_account.create', class: 'btn btn--primary btn--sm btn--block' })
+              S'inscrire
+            @end
+          </div>
+        @end
+
+        <div class="sidebar__foot">
+          @if(auth.user)
+            @navLink({ route: 'settings', class: 'sidebar__link sidebar__link--sm' })
+              @svg('lucide:settings', { width: 20, height: 20 })
+              <span class="sidebar__label">Paramètres</span>
+            @end
+
+            <div class="sidebar__profile" x-data="{ open: false }">
+              <button
+                type="button"
+                class="sidebar__user"
+                aria-haspopup="menu"
+                x-bind:aria-expanded="open"
+                x-on:click="open = !open"
+              >
+                @!avatar({ initials: auth.user.initials, class: 'avatar avatar--sm' })
+                <span class="sidebar__identity">
+                  <strong>{{ auth.user.username }}</strong>
+                  <span>{{ '@' + auth.user.username }}</span>
+                </span>
+                @svg('lucide:chevrons-up-down', {
+                  width: 16,
+                  height: 16,
+                  class: 'sidebar__chevron',
+                })
+              </button>
+
+              <div
+                class="sidebar__menu"
+                role="menu"
+                x-cloak
+                x-show="open"
+                x-transition
+                x-on:click.outside="open = false"
+              >
+                <button
+                  type="button"
+                  class="sidebar__menu-item"
+                  role="menuitem"
+                  x-data="themeToggle"
+                  data-initial-theme="{{ currentTheme }}"
+                  x-on:click="toggle"
+                >
+                  @svg('lucide:moon', { width: 17, height: 17 })
+                  <span x-text="theme === 'dark' ? 'Mode clair' : 'Mode sombre'"></span>
+                </button>
+
+                @form({ route: 'session.destroy', method: 'POST', class: 'sidebar__menu-form' })
+                  <button type="submit" class="sidebar__menu-item" role="menuitem">
+                    @svg('lucide:log-out', { width: 17, height: 17 })
+                    Se déconnecter
+                  </button>
+                @end
+              </div>
+            </div>
+          @else
+            @!themeToggle()
           @end
         </div>
-      </div>
-    </header>
+      </aside>
 
-    <nav class="subnav">
-      <div class="subnav__inner">
-        @each(item in nav)
-          @navLink({ route: item.route, class: 'subnav__item' })
-            @if(item.icon)
-              @svg(item.icon, { width: 14, height: 14 })
+      <main class="main">{{{ await $slots.main() }}}</main>
+
+      @if(auth.user)
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Publier un post"
+          x-cloak
+          x-show="composeOpen"
+          x-transition
+          x-on:keydown.escape.window="composeOpen = false"
+        >
+          <div class="modal__backdrop" x-on:click="composeOpen = false"></div>
+          <div class="modal__panel">
+            <header class="modal__head">
+              <h2 class="modal__title">Publier un post</h2>
+              <button
+                type="button"
+                class="modal__close"
+                aria-label="Fermer"
+                x-on:click="composeOpen = false"
+              >
+                @svg('lucide:x', { width: 18, height: 18 })
+              </button>
+            </header>
+
+            @form({
+              route: 'posts.store',
+              method: 'POST',
+              class: 'compose__form',
+              'x-data': '{ submitting: false }',
+              'x-on:submit': 'submitting = true',
+            })
+              @field.root({ name: 'content' })
+                @!field.label({ text: 'Quoi de neuf ?' })
+                @!textarea.control({
+                  rows: 5,
+                  maxlength: 280,
+                  placeholder: 'Publiez quelque chose…',
+                  autofocus: true,
+                })
+                @!field.error()
+              @end
+              <div class="compose__actions">
+                <button
+                  type="button"
+                  class="btn btn--secondary"
+                  x-on:click="composeOpen = false"
+                >
+                  Annuler
+                </button>
+                @!button({
+                  text: 'Publier',
+                  type: 'submit',
+                  'x-bind:disabled': 'submitting',
+                  'x-text': "submitting ? 'Envoi…' : 'Publier'",
+                })
+              </div>
             @end
-            {{ item.label }}
-          @end
-        @end
-      </div>
-    </nav>
-
-    <div class="app-main">{{{ await $slots.main() }}}</div>
+          </div>
+        </div>
+      @end
+    </div>
     @include('partials/flash_alerts')
   </body>
 </html>

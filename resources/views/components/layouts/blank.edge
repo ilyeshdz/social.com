@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-  lang="fr"
+  lang="en-us"
   data-theme="{{
     request.plainCookie('app_theme', {
       defaultValue: 'light',
@@ -15,16 +15,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
-  <body class="auth-page">
-    <div class="auth-page__tools">
-      @!themeToggle()
-    </div>
-    <main class="auth-sheet">
-      <div class="auth-sheet__logo">
-        @!logo({ size: 36 })
-      </div>
-      {{{ await $slots.main() }}}
-    </main>
+  <body>
+    {{{ await $slots.main() }}}
     @include('partials/flash_alerts')
   </body>
 </html>

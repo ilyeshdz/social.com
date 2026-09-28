@@ -21,15 +21,7 @@ export class BookmarkSchema extends BaseModel {
 }
 
 export class CommentSchema extends BaseModel {
-  static $columns = [
-    'content',
-    'createdAt',
-    'id',
-    'parentId',
-    'postId',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['content', 'createdAt', 'id', 'parentId', 'postId', 'updatedAt', 'userId'] as const
   $columns = CommentSchema.$columns
   @column()
   declare content: string
@@ -74,15 +66,7 @@ export class LikeSchema extends BaseModel {
 }
 
 export class NotificationSchema extends BaseModel {
-  static $columns = [
-    'actorId',
-    'createdAt',
-    'id',
-    'readAt',
-    'recipientId',
-    'subjectId',
-    'type',
-  ] as const
+  static $columns = ['actorId', 'createdAt', 'id', 'readAt', 'recipientId', 'subjectId', 'type'] as const
   $columns = NotificationSchema.$columns
   @column()
   declare actorId: number
@@ -101,17 +85,7 @@ export class NotificationSchema extends BaseModel {
 }
 
 export class PostSchema extends BaseModel {
-  static $columns = [
-    'commentsCount',
-    'content',
-    'createdAt',
-    'id',
-    'likesCount',
-    'mediaUrl',
-    'parentId',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['commentsCount', 'content', 'createdAt', 'id', 'likesCount', 'mediaUrl', 'parentId', 'updatedAt', 'userId'] as const
   $columns = PostSchema.$columns
   @column()
   declare commentsCount: number
@@ -134,21 +108,7 @@ export class PostSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = [
-    'avatarUrl',
-    'bio',
-    'createdAt',
-    'email',
-    'followersCount',
-    'followingCount',
-    'fullName',
-    'id',
-    'password',
-    'postsCount',
-    'updatedAt',
-    'username',
-    'website',
-  ] as const
+  static $columns = ['avatarUrl', 'bio', 'createdAt', 'email', 'followersCount', 'followingCount', 'id', 'password', 'postsCount', 'updatedAt', 'username', 'website'] as const
   $columns = UserSchema.$columns
   @column()
   declare avatarUrl: string | null
@@ -162,8 +122,6 @@ export class UserSchema extends BaseModel {
   declare followersCount: number
   @column()
   declare followingCount: number
-  @column()
-  declare fullName: string | null
   @column({ isPrimary: true })
   declare id: number
   @column({ serializeAs: null })

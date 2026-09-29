@@ -129,10 +129,23 @@
           x-cloak
           x-show="composeOpen"
           x-transition
+          x-bind:aria-hidden="!composeOpen"
           x-on:keydown.escape.window="composeOpen = false"
         >
-          <div class="modal__backdrop" x-on:click="composeOpen = false"></div>
-          <div class="modal__panel">
+          <div
+            class="modal__backdrop"
+            x-transition.opacity.duration.150ms
+            x-on:click="composeOpen = false"
+          ></div>
+          <div
+            class="modal__panel"
+            x-transition:enter.duration.200ms
+            x-transition:leave.duration.150ms
+            x-transition:enter-start="opacity: 0; transform: translateY(12px) scale(0.97);"
+            x-transition:enter-end="opacity: 1; transform: translateY(0) scale(1);"
+            x-transition:leave-start="opacity: 1; transform: translateY(0) scale(1);"
+            x-transition:leave-end="opacity: 0; transform: translateY(8px) scale(0.97);"
+          >
             <header class="modal__head">
               <h2 class="modal__title">Publier un post</h2>
               <button

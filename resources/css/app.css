@@ -1169,11 +1169,15 @@ input {
   align-items: flex-start;
   justify-content: center;
   padding: 9vh 16px 16px;
+  pointer-events: none;
 }
 .modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(10, 10, 11, 0.42);
+  background: rgba(10, 10, 11, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: auto;
 }
 .modal__panel {
   position: relative;
@@ -1184,6 +1188,7 @@ input {
   border: 1px solid var(--line-2);
   border-radius: var(--r-lg);
   box-shadow: 0 24px 60px rgba(10, 10, 11, 0.28);
+  pointer-events: auto;
 }
 .modal__head {
   display: flex;

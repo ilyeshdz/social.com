@@ -2,7 +2,6 @@
   <header class="feed__bar">
     <h1>Accueil</h1>
   </header>
-
   @if(!posts.length)
     <div class="feed__empty">
       <div class="feed__empty-mark">
@@ -25,7 +24,10 @@
   @else
     <div class="feed__list">
       @each(post in posts)
-        <article class="post">
+        <article
+          class="post"
+          x-on:click="window.location = '{{ route('posts.show', { id: post.id }) }}'"
+        >
           @!avatar({ initials: post.user.initials, class: 'avatar post__avatar' })
           <div class="post__body">
             <div class="post__meta">

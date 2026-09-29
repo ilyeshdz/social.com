@@ -1,0 +1,83 @@
+@layouts.app({ title: post.content.length > 50 ? post.content.substring(0, 50) + '…' : post.content })
+
+<nav class="post-detail__nav">
+  @link({ route: 'home', class: 'btn btn--ghost btn--sm' })
+    @svg('lucide:arrow-left', { width: 16, height: 16 })
+    Retour
+  @end
+</nav>
+
+<article class="post post--detail">
+  @!avatar({ initials: post.user.initials, class: 'avatar post__avatar' })
+  <div class="post__body">
+    <div class="post__meta">
+      <strong class="post__name">{{ post.user.username }}</strong>
+      <span class="post__handle">{{ '@' + post.user.username }}</span>
+      <span class="post__sep">·</span>
+      <time class="post__date" datetime="{{ post.createdAt.toISO() }}">
+        {{ post.createdAt.toFormat('d LLL yyyy') }}
+      </time>
+    </div>
+    <div class="post__content">{{ post.content }}</div>
+    <div class="post__stats">
+      <span class="post__stat">
+        @svg('lucide:message-circle', { width: 16, height: 16 })
+        {{ post.commentsCount }}
+      </span>
+      <span class="post__stat">
+        @svg('lucide:heart', { width: 16, height: 16 })
+        {{ post.likesCount }}
+      </span>
+    </div>
+  </div>
+</article>
+
+@if(post.comments.length > 0)
+  <section class="comments" aria-label="Commentaires">
+    <h2 class="comments__title">{{ post.commentsCount }} commentaire{{ post.commentsCount > 1 ? 's' : '' }}</h2>
+    <ul class="comments__list">
+      @each(comment in post.comments)
+        @include('components/comment', { comment, depth: 0 })
+      @end
+    </ul>
+  </section>
+@else
+  <section class="comments">
+    <p class="comments__empty">Aucun commentaire pour le moment. Soyez le premier à répondre !</p>
+  </section>
+@end
+
+@if(auth.user)
+  <section class="comment-form">
+    @form({
+      route: 'comments.store',
+      routeParams: { id: post.id },
+      method: 'POST',
+      class: 'comment-form__form',
+      'x-data': '{ submitting: false }',
+      'x-on:submit': 'submitting = true',
+    })
+      @field.root({ name: 'content' })
+        @!textarea.control({
+          rows: 3,
+          maxlength: 2000,
+          placeholder: 'Répondre à la conversation…',
+          autofocus: true,
+        })
+        @!field.error()
+      @end
+      <div class="comment-form__actions">
+        @!button({
+          text: 'Répondre',
+          type: 'submit',
+          'x-bind:disabled': 'submitting',
+          'x-text': "submitting ? 'Envoi…' : 'Répondre'",
+        })
+      </div>
+    @end
+  </section>
+@else
+  <p class="comment-form__auth">
+    @link({ route: 'session.create', class: 'il' })Connectez-vous@end pour commenter.
+  </p>
+@end

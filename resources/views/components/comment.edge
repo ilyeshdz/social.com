@@ -1,0 +1,35 @@
+@let(isReply = depth > 0)
+<li
+  class="comment {{ isReply ? 'comment--reply' : '' }}"
+  style="{{ isReply ? 'margin-left: 48px;' : '' }}"
+>
+  <article class="comment__item">
+    @!avatar({ initials: comment.user.initials, class: 'avatar comment__avatar' })
+    <div class="comment__body">
+      <header class="comment__meta">
+        <strong class="comment__name">{{ comment.user.username }}</strong>
+        <span class="comment__handle">{{ '@' + comment.user.username }}</span>
+        <span class="comment__sep">·</span>
+        <time class="comment__date" datetime="{{ comment.createdAt.toISO() }}">
+          {{ comment.createdAt.toFormat('d LLL yyyy') }}
+        </time>
+      </header>
+      <div class="comment__content">{{ comment.content }}</div>
+    </div>
+  </article>
+  @if(comment.replies && comment.replies.length > 0)
+    <ul class="comments__replies">
+      @each(reply in comment.replies)
+        @include('components/comment', { comment: reply, depth: depth + 1 })
+      @end
+    </ul>
+  @end
+  @if(auth.user)
+    <button type="button" class="comment__reply-btn" x-on:click="replyTo = {{ comment.id }}">
+      @svg('lucide:reply', { width: 14, height: 14 })
+      
+      Répondre
+
+    </button>
+  @end
+</li>

@@ -4,6 +4,7 @@
  */
 
 export const controllers = {
+  Comment: () => import('#controllers/comment_controller'),
   Home: () => import('#controllers/home_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Post: () => import('#controllers/post_controller'),

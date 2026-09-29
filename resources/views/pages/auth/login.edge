@@ -1,7 +1,6 @@
 @layouts.auth({ title: 'Se connecter' })
   <h1 class="auth-sheet__title">Se connecter</h1>
   <p class="auth-sheet__sub">Content de vous revoir.</p>
-
   @form({
     route: 'session.store',
     method: 'POST',
@@ -38,7 +37,9 @@
   @end
 
   <p class="auth-sheet__foot">
+    
     Pas encore de compte ?
+
     @link({ route: 'new_account.create', class: 'il' })
       S'inscrire
     @end

@@ -36,7 +36,6 @@
             @end
           @end
         </nav>
-
         @if(auth.user)
           <button
             type="button"
@@ -48,10 +47,16 @@
           </button>
         @else
           <div class="sidebar__auth">
-            @link({ route: 'session.create', class: 'btn btn--secondary btn--sm btn--block' })
+            @link({
+              route: 'session.create',
+              class: 'btn btn--secondary btn--sm btn--block',
+            })
               Connexion
             @end
-            @link({ route: 'new_account.create', class: 'btn btn--primary btn--sm btn--block' })
+            @link({
+              route: 'new_account.create',
+              class: 'btn btn--primary btn--sm btn--block',
+            })
               S'inscrire
             @end
           </div>
@@ -103,11 +108,16 @@
                   @svg('lucide:moon', { width: 17, height: 17 })
                   <span x-text="theme === 'dark' ? 'Mode clair' : 'Mode sombre'"></span>
                 </button>
-
-                @form({ route: 'session.destroy', method: 'POST', class: 'sidebar__menu-form' })
+                @form({
+                  route: 'session.destroy',
+                  method: 'POST',
+                  class: 'sidebar__menu-form',
+                })
                   <button type="submit" class="sidebar__menu-item" role="menuitem">
                     @svg('lucide:log-out', { width: 17, height: 17 })
+                    
                     Se déconnecter
+
                   </button>
                 @end
               </div>
@@ -119,7 +129,6 @@
       </aside>
 
       <main class="main">{{{ await $slots.main() }}}</main>
-
       @if(auth.user)
         <div
           class="modal"
@@ -157,7 +166,6 @@
                 @svg('lucide:x', { width: 18, height: 18 })
               </button>
             </header>
-
             @form({
               route: 'posts.store',
               method: 'POST',
@@ -175,12 +183,9 @@
                 })
                 @!field.error()
               @end
+
               <div class="compose__actions">
-                <button
-                  type="button"
-                  class="btn btn--secondary"
-                  x-on:click="composeOpen = false"
-                >
+                <button type="button" class="btn btn--secondary" x-on:click="composeOpen = false">
                   Annuler
                 </button>
                 @!button({
